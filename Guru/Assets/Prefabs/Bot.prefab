@@ -1,5 +1,35 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!54 &3027350250768792509
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3027350248848086442}
+  serializedVersion: 2
+  m_Mass: 100
+  m_Drag: 1
+  m_AngularDrag: 1
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!114 &8352133957099758466
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3027350248848086442}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2eafe1c4f43002f4a9ae978daba0d0f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  snapTo: {fileID: 3027350248847591818}
+  snapTime: 0.5
 --- !u!1 &3027350250327244523
 GameObject:
   m_ObjectHideFlags: 0
@@ -106,26 +136,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a77aa2725a8b91148a97d395f9a5ce91, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerSwordPosition: {fileID: 0}
+  playerSwordTransform: {fileID: 0}
   AISword: {fileID: 3027350248848086442}
   MAXHP: 100
   damageTaken: 0
---- !u!54 &3027350250768792509
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3027350248848086442}
-  serializedVersion: 2
-  m_Mass: 100
-  m_Drag: 1
-  m_AngularDrag: 1
-  m_UseGravity: 0
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
+  verticalSwordDirection: 0
+  horizontalSwordDirection: 0
+  lockPoint: {fileID: 0}
+  snapPoints: []
 --- !u!1001 &3027350248847987468
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -1,10 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Valve.VR.InteractionSystem.Sample;
 
 public class Brain : MonoBehaviour
 {
-    int DNALength = 4;
+    int DNALength = 8;
     public DNA dna;
     public Transform playerSwordTransform;
     public GameObject AISword;
@@ -17,10 +18,17 @@ public class Brain : MonoBehaviour
     public enum Direction {North, East, South, West};
     public Direction verticalSwordDirection;
     public Direction horizontalSwordDirection;
+    public LockToPoint lockPoint;
+    public List<Transform> snapPoints;
 
     private void Awake() {
         playerSwordTransform = GameObject.Find("PlayerSword").GetComponent<Transform>();
         previousSwordPosition = playerSwordTransform.position;
+        lockPoint = AISword.GetComponent<LockToPoint>();
+
+        // DEBUG //
+        snapPoints.Add(GameObject.Find("North").GetComponent<Transform>());
+        snapPoints.Add(GameObject.Find("East").GetComponent<Transform>());
     }
 
     public void Init() {
@@ -71,19 +79,42 @@ public class Brain : MonoBehaviour
 
         float verticalRotateRate = 0;
         float horizontalRotateRate = 0;
+        float verticalRotationStop = 0;
+        float horizontalRotationStop = 0;
+        Vector3 AISwordRotation = AISword.transform.localEulerAngles;
         // float travelSpeed = dna.GetGene(0);
 
         if (swordPositionMoved)
         {
-            if (verticalSwordDirection == Direction.North)
-                verticalRotateRate = dna.GetGene(0);
-            else
-                verticalRotateRate = dna.GetGene(1);
+            if(Mathf.Round(AISwordRotation.y)%360 != verticalRotationStop) {
+                if (verticalSwordDirection == Direction.North) {
+                    verticalRotateRate = dna.GetGene(0)/180f;
+                    verticalRotationStop = dna.GetGene(5);
+                }
+                else {
+                    verticalRotateRate = dna.GetGene(1)/180f;
+                    verticalRotationStop = dna.GetGene(6);
+                }
+            }
 
-            if (horizontalSwordDirection == Direction.East)
-                horizontalRotateRate = dna.GetGene(2);
-            else
-                horizontalRotateRate = dna.GetGene(3);
+            if(Mathf.Round(AISwordRotation.x)%360 != horizontalRotationStop) {
+                if (horizontalSwordDirection == Direction.East) {
+                    horizontalRotateRate = dna.GetGene(2)/180f;
+                    horizontalRotationStop = dna.GetGene(7);
+                    lockPoint.snapTo = snapPoints[1];
+                }
+                else {
+                    horizontalRotateRate = dna.GetGene(3)/180f;
+                    horizontalRotationStop = dna.GetGene(8);
+                }
+            }
+
+
+            if(verticalSwordDirection == Direction.North) {
+                lockPoint.snapTo = snapPoints[0];
+            } else if(horizontalSwordDirection == Direction.East) {
+                lockPoint.snapTo = snapPoints[1];
+            }
         }
             
         
