@@ -5,7 +5,7 @@ using Valve.VR.InteractionSystem.Sample;
 
 public class Brain : MonoBehaviour
 {
-    int DNALength = 8;
+    int DNALength = 12;
     public DNA dna;
     public Transform playerSwordTransform;
     public GameObject AISword;
@@ -18,24 +18,27 @@ public class Brain : MonoBehaviour
     public enum Direction {North, East, South, West};
     public Direction verticalSwordDirection;
     public Direction horizontalSwordDirection;
+    private Direction primaryDirection;
     public LockToPoint lockPoint;
     public List<Transform> snapPoints;
 
-    private void Awake() {
+    private void Start() {
         playerSwordTransform = GameObject.Find("PlayerSword").GetComponent<Transform>();
         previousSwordPosition = playerSwordTransform.position;
         lockPoint = AISword.GetComponent<LockToPoint>();
 
-        // DEBUG //
-        snapPoints.Add(GameObject.Find("North").GetComponent<Transform>());
-        snapPoints.Add(GameObject.Find("East").GetComponent<Transform>());
+        foreach (Transform transform in snapPoints)
+        {
+            int index = snapPoints.IndexOf(transform);
+            transform.Rotate(dna.GetGene(3*index), dna.GetGene(3*index+1), dna.GetGene(3*index+2), Space.Self);
+        }
     }
 
     public void Init() {
         dna = new DNA(DNALength, 360);
     }
 
-    private void OnCollisionEnter(Collision other) {
+    private void OnTriggerEnter(Collider other) {
         if(other.gameObject.tag == "dead") {
             damageTaken += 1;
 
@@ -54,8 +57,10 @@ public class Brain : MonoBehaviour
             previousSwordPosition = playerSwordTransform.position;
         }
 
+        float xMagnitude = playerSwordTransform.position.x;
+        float yMagnitude = playerSwordTransform.position.y;
 
-        if (playerSwordTransform.position.y > 0.6)
+        if (yMagnitude > 0.6)
         {
             verticalSwordDirection = Direction.North;
         }
@@ -64,7 +69,7 @@ public class Brain : MonoBehaviour
             verticalSwordDirection = Direction.South;
         }
 
-        if (playerSwordTransform.position.x > 0)
+        if (xMagnitude > 0)
         {
             horizontalSwordDirection = Direction.West;
         }
@@ -72,6 +77,11 @@ public class Brain : MonoBehaviour
         {
             horizontalSwordDirection = Direction.East;
         }
+
+        if(1.5*Mathf.Abs(xMagnitude) > Mathf.Abs(yMagnitude))
+            primaryDirection = horizontalSwordDirection;
+        else
+            primaryDirection = verticalSwordDirection;
     }
 
     private void FixedUpdate() {
@@ -82,43 +92,18 @@ public class Brain : MonoBehaviour
         float verticalRotationStop = 0;
         float horizontalRotationStop = 0;
         Vector3 AISwordRotation = AISword.transform.localEulerAngles;
-        // float travelSpeed = dna.GetGene(0);
 
         if (swordPositionMoved)
         {
-            if(Mathf.Round(AISwordRotation.y)%360 != verticalRotationStop) {
-                if (verticalSwordDirection == Direction.North) {
-                    verticalRotateRate = dna.GetGene(0)/180f;
-                    verticalRotationStop = dna.GetGene(5);
-                }
-                else {
-                    verticalRotateRate = dna.GetGene(1)/180f;
-                    verticalRotationStop = dna.GetGene(6);
-                }
-            }
-
-            if(Mathf.Round(AISwordRotation.x)%360 != horizontalRotationStop) {
-                if (horizontalSwordDirection == Direction.East) {
-                    horizontalRotateRate = dna.GetGene(2)/180f;
-                    horizontalRotationStop = dna.GetGene(7);
-                    lockPoint.snapTo = snapPoints[1];
-                }
-                else {
-                    horizontalRotateRate = dna.GetGene(3)/180f;
-                    horizontalRotationStop = dna.GetGene(8);
-                }
-            }
-
-
-            if(verticalSwordDirection == Direction.North) {
+            if(primaryDirection == Direction.North) {
                 lockPoint.snapTo = snapPoints[0];
-            } else if(horizontalSwordDirection == Direction.East) {
+            } else if(primaryDirection == Direction.South) {
                 lockPoint.snapTo = snapPoints[1];
+            } else if(primaryDirection == Direction.East) {
+                lockPoint.snapTo = snapPoints[2];
+            } else if(primaryDirection == Direction.West) {
+                lockPoint.snapTo = snapPoints[3];
             }
         }
-            
-        
-        // this.transform.Translate(0,0,travelSpeed * 0.001f);
-        AISword.transform.Rotate(horizontalRotateRate,verticalRotateRate,0);
     }
 }

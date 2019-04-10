@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 public class PopulationManager : MonoBehaviour
 {
     public GameObject botPrefab;
-    public GameObject startingPos;
+    public List<GameObject> startingPos;
     public int populationSize = 50;
     List<GameObject> population = new List<GameObject>();
     public static float elapsed = 0f;
@@ -30,14 +30,15 @@ public class PopulationManager : MonoBehaviour
 
     private void Start() {
         for(int i = 0; i < populationSize; i++) {
-            GameObject bot = Instantiate(botPrefab, startingPos.transform.position, this.transform.rotation);
+            GameObject bot = Instantiate(botPrefab, startingPos[i].transform.position, this.transform.rotation);
             bot.GetComponent<Brain>().Init();
             population.Add(bot);
         }
     }
 
     GameObject Breed(GameObject parent1, GameObject parent2) {
-        GameObject offspring = Instantiate(botPrefab, startingPos.transform.position, this.transform.rotation);
+        //TODO: Remove startingPos[0]
+        GameObject offspring = Instantiate(botPrefab, startingPos[0].transform.position, this.transform.rotation);
         Brain brain = offspring.GetComponent<Brain>();
 
         if(Random.Range(0,100) == 1) {
