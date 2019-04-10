@@ -22,6 +22,8 @@ public class Brain : MonoBehaviour
     public LockToPoint lockPoint;
     public List<Transform> snapPoints;
 
+    private Vector3 startingPosition;
+
     private void Start() {
         playerSwordTransform = GameObject.Find("PlayerSword").GetComponent<Transform>();
         previousSwordPosition = playerSwordTransform.position;
@@ -32,6 +34,8 @@ public class Brain : MonoBehaviour
             int index = snapPoints.IndexOf(transform);
             transform.Rotate(dna.GetGene(3*index), dna.GetGene(3*index+1), dna.GetGene(3*index+2), Space.Self);
         }
+
+        startingPosition = gameObject.transform.position;
     }
 
     public void Init() {
@@ -60,7 +64,7 @@ public class Brain : MonoBehaviour
         float xMagnitude = playerSwordTransform.position.x;
         float yMagnitude = playerSwordTransform.position.y;
 
-        if (yMagnitude > 0.6)
+        if (yMagnitude > startingPosition.y+0.6)
         {
             verticalSwordDirection = Direction.North;
         }
@@ -69,7 +73,7 @@ public class Brain : MonoBehaviour
             verticalSwordDirection = Direction.South;
         }
 
-        if (xMagnitude > 0)
+        if (xMagnitude > startingPosition.x)
         {
             horizontalSwordDirection = Direction.West;
         }
@@ -78,7 +82,7 @@ public class Brain : MonoBehaviour
             horizontalSwordDirection = Direction.East;
         }
 
-        if(1.5*Mathf.Abs(xMagnitude) > Mathf.Abs(yMagnitude))
+        if(Mathf.Abs(xMagnitude) > Mathf.Abs(yMagnitude))
             primaryDirection = horizontalSwordDirection;
         else
             primaryDirection = verticalSwordDirection;
