@@ -109,7 +109,7 @@ GameObject:
   - component: {fileID: 3027350250327244436}
   - component: {fileID: 5281163866811918374}
   - component: {fileID: 6891045513395499732}
-  - component: {fileID: 672948469466734646}
+  - component: {fileID: 2417425502878915396}
   m_Layer: 0
   m_Name: Bot
   m_TagString: Untagged
@@ -249,7 +249,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 80
   m_CollisionDetection: 0
---- !u!114 &672948469466734646
+--- !u!114 &2417425502878915396
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -258,7 +258,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3027350250327244523}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 658f2eaec0940b9459ec87ec8221df31, type: 3}
+  m_Script: {fileID: 11500000, guid: ed55834a9a769624e81095fad8551a17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 7848102770740775913}
