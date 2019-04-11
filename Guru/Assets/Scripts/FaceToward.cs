@@ -5,9 +5,9 @@ using UnityEngine;
 public class FaceToward : MonoBehaviour
 {
     public Transform player;
-
+    public string gameObjectName;
     private void Start() {
-        player = GameObject.Find("PlayerSword").GetComponent<Transform>();
+        player = GameObject.Find(gameObjectName).GetComponent<Transform>();
     }
 
     private void Update() {

@@ -18,14 +18,15 @@ public class Brain : MonoBehaviour
     public enum Direction {North, East, South, West};
     public Direction verticalSwordDirection;
     public Direction horizontalSwordDirection;
-    private Direction primaryDirection;
+    public Direction primaryDirection;
     public LockToPoint lockPoint;
     public List<Transform> snapPoints;
+    public Vector3 enemyRelativeToPlayer;
 
     private Vector3 startingPosition;
 
     private void Start() {
-        playerSwordTransform = GameObject.Find("PlayerSword").GetComponent<Transform>();
+        playerSwordTransform = GameObject.Find("PlayerSwordRoot").GetComponent<Transform>();
         previousSwordPosition = playerSwordTransform.position;
         lockPoint = AISword.GetComponent<LockToPoint>();
 
@@ -57,30 +58,22 @@ public class Brain : MonoBehaviour
         swordPositionMoved = playerSwordTransform.position != previousSwordPosition;
 
         if(swordPositionMoved)
-        {
+            enemyRelativeToPlayer = (this.transform.position - playerSwordTransform.position).normalized;
             previousSwordPosition = playerSwordTransform.position;
-        }
 
-        float xMagnitude = playerSwordTransform.position.x;
-        float yMagnitude = playerSwordTransform.position.y;
+        float xMagnitude = transform.InverseTransformPoint(playerSwordTransform.position).x;
+        float yMagnitude = transform.InverseTransformPoint(playerSwordTransform.position).y;
 
-        if (yMagnitude > startingPosition.y+0.6)
-        {
+        if (enemyRelativeToPlayer.y < 0)
             verticalSwordDirection = Direction.North;
-        }
         else
-        {
             verticalSwordDirection = Direction.South;
-        }
 
-        if (xMagnitude > startingPosition.x)
-        {
+        if (enemyRelativeToPlayer.x < 0)
             horizontalSwordDirection = Direction.West;
-        }
         else
-        {
             horizontalSwordDirection = Direction.East;
-        }
+        
 
         if(Mathf.Abs(xMagnitude) > Mathf.Abs(yMagnitude))
             primaryDirection = horizontalSwordDirection;
@@ -90,6 +83,10 @@ public class Brain : MonoBehaviour
 
     private void FixedUpdate() {
         if(!alive) return;
+
+        Vector3 pos = playerSwordTransform.position;
+        enemyRelativeToPlayer = (this.transform.position - playerSwordTransform.position).normalized;
+        Debug.DrawLine(pos, pos + enemyRelativeToPlayer * 10, Color.red, 2f);
 
         float verticalRotateRate = 0;
         float horizontalRotateRate = 0;
