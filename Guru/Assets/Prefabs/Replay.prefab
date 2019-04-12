@@ -63,6 +63,7 @@ MonoBehaviour:
   startMoving: 0
   sword: {fileID: 0}
   movementCounter: 0
+  repeatSwingForever: 0
 --- !u!1001 &2126831659466795724
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -129,6 +130,10 @@ PrefabInstance:
     - target: {fileID: 400006, guid: 6a0eedfe1b2e14d47b276e72159e85b1, type: 3}
       propertyPath: m_LocalScale.z
       value: 0.4886964
+      objectReference: {fileID: 0}
+    - target: {fileID: 100002, guid: 6a0eedfe1b2e14d47b276e72159e85b1, type: 3}
+      propertyPath: m_TagString
+      value: dead
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6a0eedfe1b2e14d47b276e72159e85b1, type: 3}
