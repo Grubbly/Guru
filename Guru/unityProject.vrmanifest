@@ -1,0 +1,16 @@
+{
+  "source": "Unity",
+  "applications": [
+    {
+      "app_key": "application.generated.unity.guru.exe",
+      "launch_type": "url",
+      "url": "steam://launch/",
+      "action_manifest_path": "T:\\Personal Projects\\Guru\\Guru\\actions.json",
+      "strings": {
+        "en_us": {
+          "name": "Guru [Testing]"
+        }
+      }
+    }
+  ]
+}
