@@ -7,10 +7,12 @@ public class Brain : MonoBehaviour
 {
     int DNALength = 12;
     public DNA dna;
-    public Transform playerSwordTransform;
+    public Transform enemySwordTransform;
     public GameObject AISword;
     public float MAXHP = 100;
     public int damageTaken = 0;
+
+    public bool playerIsEnemy = false;
     bool alive = true;
     bool swordPositionMoved = true;
     private Vector3 previousSwordPosition;
@@ -26,8 +28,10 @@ public class Brain : MonoBehaviour
     private Vector3 startingPosition;
 
     private void Start() {
-        playerSwordTransform = GameObject.Find("PlayerSwordRoot").GetComponent<Transform>();
-        previousSwordPosition = playerSwordTransform.position;
+        if(playerIsEnemy) {
+            enemySwordTransform = GameObject.Find("PlayerSwordRoot").GetComponent<Transform>();
+        }
+        previousSwordPosition = enemySwordTransform.position;
         lockPoint = AISword.GetComponent<LockToPoint>();
 
         foreach (Transform transform in snapPoints)
@@ -55,11 +59,11 @@ public class Brain : MonoBehaviour
     private void Update() {
         if(!alive) return;
 
-        swordPositionMoved = playerSwordTransform.position != previousSwordPosition;
+        swordPositionMoved = enemySwordTransform.position != previousSwordPosition;
 
         if(swordPositionMoved) {
-            enemyRelativeToPlayer = (this.transform.position - playerSwordTransform.position).normalized;
-            previousSwordPosition = playerSwordTransform.position;
+            enemyRelativeToPlayer = (this.transform.position - enemySwordTransform.position).normalized;
+            previousSwordPosition = enemySwordTransform.position;
 
             if (enemyRelativeToPlayer.y < 0)
                 verticalSwordDirection = Direction.North;
@@ -82,8 +86,8 @@ public class Brain : MonoBehaviour
     private void FixedUpdate() {
         if(!alive) return;
 
-        Vector3 pos = playerSwordTransform.position;
-        enemyRelativeToPlayer = (this.transform.position - playerSwordTransform.position).normalized;
+        Vector3 pos = enemySwordTransform.position;
+        enemyRelativeToPlayer = (this.transform.position - enemySwordTransform.position).normalized;
         Debug.DrawLine(pos, pos + enemyRelativeToPlayer * 10, Color.red, 2f);
 
         Vector3 AISwordRotation = AISword.transform.localEulerAngles;

@@ -30,22 +30,22 @@ public class SwordMotionReproducer : MonoBehaviour
 
     void FixedUpdate()
     {
-        if(startMoving) {
-            if(movementCounter < originalMovementPoints.Length-1) {
-
-                if(originalMovementPoints[movementCounter] == Vector3.zero) {
+        if(movementCounter < originalMovementPoints.Length-1) {
+            if(originalMovementPoints[movementCounter] == Vector3.zero) {
                     lastPosition = startPosition;
                     movementCounter = 0;
+                    startMoving = true;
 
                     if(!repeatSwingForever)
                         startMoving = false;
-                }
+            }
 
+            if(startMoving) {
                 Vector3 nextPosition = (lastPosition + (originalMovementPoints[movementCounter+1] - originalMovementPoints[movementCounter]));
                 sword.MovePosition(nextPosition + transform.forward * Time.deltaTime);
-                movementCounter++;
                 lastPosition = nextPosition;
             }
+            movementCounter++;
         } 
     }
 }
