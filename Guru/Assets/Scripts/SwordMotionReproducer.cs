@@ -10,18 +10,19 @@ public class SwordMotionReproducer : MonoBehaviour
     public Rigidbody sword;
 
     public int movementCounter = 0;
-    
+    public bool repeatSwingForever = false;
     private Vector3 lastPosition;
     private Vector3 startPosition;
 
     private void Start() {
+        GameObject.Find("TrainingDummy").GetComponentInChildren<SwingRecorder>().swordMotionReproducers.Add(GetComponent<SwordMotionReproducer>());
         startPosition = transform.position;
         lastPosition = startPosition;
         sword = GetComponent<Rigidbody>();
     }
 
     public void Init() {
-        transform.position = new Vector3(originalMovementPoints[0].x, originalMovementPoints[0].y, transform.position.z);
+        transform.position = new Vector3(transform.position.x+originalMovementPoints[0].x, originalMovementPoints[0].y, transform.position.z);
         startPosition = transform.position;
         lastPosition = startPosition;
         startMoving = true;
@@ -35,7 +36,9 @@ public class SwordMotionReproducer : MonoBehaviour
                 if(originalMovementPoints[movementCounter] == Vector3.zero) {
                     lastPosition = startPosition;
                     movementCounter = 0;
-                    startMoving = false;
+
+                    if(!repeatSwingForever)
+                        startMoving = false;
                 }
 
                 Vector3 nextPosition = (lastPosition + (originalMovementPoints[movementCounter+1] - originalMovementPoints[movementCounter]));

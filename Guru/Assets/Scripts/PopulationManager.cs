@@ -33,7 +33,15 @@ public class PopulationManager : MonoBehaviour
     private void Start() {
         Vector3 origin = transform.position;
         for(int i = 0; i < populationSize; i++) {
-            GameObject bot = Instantiate(botPrefab, new Vector3(origin.x+(i%botsPerRow)*botSquareSpacing,origin.y,origin.z+(i/botsPerRow)*botSquareSpacing), this.transform.rotation);
+            
+            GameObject bot = Instantiate(
+                botPrefab, 
+                new Vector3(
+                    origin.x+(i%botsPerRow)*botSquareSpacing,
+                    origin.y,origin.z+(i/botsPerRow)*botSquareSpacing), 
+                    Quaternion.Euler(0,180,0)
+            );
+
             bot.GetComponent<Brain>().Init();
             population.Add(bot);
         }

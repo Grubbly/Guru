@@ -4,15 +4,14 @@ using UnityEngine;
 
 public class SwingRecorder : MonoBehaviour
 {
+    public bool repeatSwingsForever = false;
     public GameObject sword;
     public const int MAX_TRAIL_POSITIONS = 1000;
     public TrailRenderer trailRenderer;
-
     public Vector3[] swordPath = new Vector3[MAX_TRAIL_POSITIONS];
-
-    public SwordMotionReproducer swordMotionReproducer;
-
+    public List<SwordMotionReproducer> swordMotionReproducers;
     public Material swordInsideColor;
+
     private Material idleColor;
 
     private void Start() {
@@ -20,7 +19,21 @@ public class SwingRecorder : MonoBehaviour
         trailRenderer = sword.GetComponentInChildren<TrailRenderer>();
         trailRenderer.emitting = false;
         idleColor = GetComponent<Renderer>().material;
-        swordMotionReproducer = GameObject.Find("Replay").GetComponentInChildren<SwordMotionReproducer>();
+
+        // Special debug item
+        swordMotionReproducers.Add(GameObject.Find("Replay").GetComponentInChildren<SwordMotionReproducer>());
+    }
+
+    private void distributeSlashDataToAgents() {
+        foreach(SwordMotionReproducer swordMotionReproducer in swordMotionReproducers) {
+            swordMotionReproducer.originalMovementPoints = swordPath;
+            swordMotionReproducer.Init();
+
+            if(repeatSwingsForever)
+                swordMotionReproducer.repeatSwingForever = true;
+            else
+                swordMotionReproducer.repeatSwingForever = false;
+        }
     }
 
     private void OnTriggerEnter(Collider other) {
@@ -37,8 +50,7 @@ public class SwingRecorder : MonoBehaviour
             trailRenderer.GetPositions(swordPath);
             GetComponent<Renderer>().material = idleColor;
             trailRenderer.emitting = false;
-            swordMotionReproducer.originalMovementPoints = swordPath;
-            swordMotionReproducer.Init();
+            distributeSlashDataToAgents();
         }
     }
 }
