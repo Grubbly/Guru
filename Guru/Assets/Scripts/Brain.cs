@@ -86,10 +86,6 @@ public class Brain : MonoBehaviour
         enemyRelativeToPlayer = (this.transform.position - playerSwordTransform.position).normalized;
         Debug.DrawLine(pos, pos + enemyRelativeToPlayer * 10, Color.red, 2f);
 
-        float verticalRotateRate = 0;
-        float horizontalRotateRate = 0;
-        float verticalRotationStop = 0;
-        float horizontalRotationStop = 0;
         Vector3 AISwordRotation = AISword.transform.localEulerAngles;
 
         if (swordPositionMoved)

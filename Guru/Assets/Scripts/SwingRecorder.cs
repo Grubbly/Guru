@@ -38,6 +38,7 @@ public class SwingRecorder : MonoBehaviour
             GetComponent<Renderer>().material = idleColor;
             trailRenderer.emitting = false;
             swordMotionReproducer.originalMovementPoints = swordPath;
+            swordMotionReproducer.Init();
         }
     }
 }
