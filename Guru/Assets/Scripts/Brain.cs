@@ -5,7 +5,7 @@ using Valve.VR.InteractionSystem.Sample;
 
 public class Brain : MonoBehaviour
 {
-    int DNALength = 12;
+    public int DNALength = 12;
     public DNA dna;
     public Transform enemySwordTransform;
     public GameObject AISword;

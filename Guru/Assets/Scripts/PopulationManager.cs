@@ -11,13 +11,14 @@ public class PopulationManager : MonoBehaviour
     List<GameObject> population = new List<GameObject>();
     public static float elapsed = 0f;
     public float trialTime = 10;
-    public float timeWalkingWeight = 5f;
 
     public float botSquareSpacing = 10f;
     public int botsPerRow = 4;
     int generation = 1;
 
     GUIStyle gui = new GUIStyle();
+
+    private Vector3 origin;
 
     private void OnGUI() {
         gui.fontSize = 30;
@@ -31,15 +32,16 @@ public class PopulationManager : MonoBehaviour
     }
 
     private void Start() {
-        Vector3 origin = transform.position;
+        origin = transform.position;
         for(int i = 0; i < populationSize; i++) {
-            
+
             GameObject bot = Instantiate(
                 botPrefab, 
                 new Vector3(
                     origin.x+(i%botsPerRow)*botSquareSpacing,
-                    origin.y,origin.z+(i/botsPerRow)*botSquareSpacing), 
-                    Quaternion.Euler(0,180,0)
+                    origin.y,
+                    origin.z+(i/botsPerRow)*botSquareSpacing), 
+                Quaternion.Euler(0,180,0)
             );
 
             bot.GetComponent<Brain>().Init();
@@ -47,9 +49,17 @@ public class PopulationManager : MonoBehaviour
         }
     }
 
-    GameObject Breed(GameObject parent1, GameObject parent2) {
+    GameObject Breed(GameObject parent1, GameObject parent2, int i) {
         //TODO: Remove startingPos[0]
-        GameObject offspring = Instantiate(botPrefab, transform.position, this.transform.rotation);
+        GameObject offspring = Instantiate(
+            botPrefab, 
+            new Vector3(
+                origin.x+(i%botsPerRow)*botSquareSpacing,
+                origin.y,
+                origin.z+(i/botsPerRow)*botSquareSpacing), 
+            Quaternion.Euler(0,180,0)
+        );
+
         Brain brain = offspring.GetComponent<Brain>();
 
         if(Random.Range(0,100) == 1) {
@@ -69,8 +79,8 @@ public class PopulationManager : MonoBehaviour
         population.Clear();
 
         for(int i = 0; i < (int) (sortedList.Count/2f)-1; i++) {
-            population.Add(Breed(sortedList[i], sortedList[i+1]));
-            population.Add(Breed(sortedList[i+1], sortedList[i]));
+            population.Add(Breed(sortedList[i], sortedList[i+1], i));
+            population.Add(Breed(sortedList[i+1], sortedList[i], i+1));
         }
 
         foreach(GameObject bot in sortedList) {
