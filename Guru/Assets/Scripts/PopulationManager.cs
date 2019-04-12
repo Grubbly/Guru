@@ -7,12 +7,14 @@ using UnityEngine.SceneManagement;
 public class PopulationManager : MonoBehaviour
 {
     public GameObject botPrefab;
-    public List<GameObject> startingPos;
     public int populationSize = 50;
     List<GameObject> population = new List<GameObject>();
     public static float elapsed = 0f;
     public float trialTime = 10;
     public float timeWalkingWeight = 5f;
+
+    public float botSquareSpacing = 10f;
+    public int botsPerRow = 4;
     int generation = 1;
 
     GUIStyle gui = new GUIStyle();
@@ -29,8 +31,9 @@ public class PopulationManager : MonoBehaviour
     }
 
     private void Start() {
+        Vector3 origin = transform.position;
         for(int i = 0; i < populationSize; i++) {
-            GameObject bot = Instantiate(botPrefab, startingPos[i].transform.position, this.transform.rotation);
+            GameObject bot = Instantiate(botPrefab, new Vector3(origin.x+(i%botsPerRow)*botSquareSpacing,origin.y,origin.z+(i/botsPerRow)*botSquareSpacing), this.transform.rotation);
             bot.GetComponent<Brain>().Init();
             population.Add(bot);
         }
@@ -38,7 +41,7 @@ public class PopulationManager : MonoBehaviour
 
     GameObject Breed(GameObject parent1, GameObject parent2) {
         //TODO: Remove startingPos[0]
-        GameObject offspring = Instantiate(botPrefab, startingPos[0].transform.position, this.transform.rotation);
+        GameObject offspring = Instantiate(botPrefab, transform.position, this.transform.rotation);
         Brain brain = offspring.GetComponent<Brain>();
 
         if(Random.Range(0,100) == 1) {
