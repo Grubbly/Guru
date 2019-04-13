@@ -14,18 +14,25 @@ public class SwordMotionReproducer : MonoBehaviour
     private Vector3 lastPosition;
     private Vector3 startPosition;
 
+    private Vector3 rootPosition;
+
     private void Start() {
-        GameObject.Find("TrainingDummy").GetComponentInChildren<SwingRecorder>().swordMotionReproducers.Add(GetComponent<SwordMotionReproducer>());
-        startPosition = transform.position;
-        lastPosition = startPosition;
+        SwingRecorder swingRecorder = GameObject.Find("TrainingDummy").GetComponentInChildren<SwingRecorder>();
+        swingRecorder.swordMotionReproducers.Add(GetComponent<SwordMotionReproducer>());
+        originalMovementPoints = swingRecorder.swordPath;
+        
+        rootPosition = transform.position;
+        Init();
+        
         sword = GetComponent<Rigidbody>();
     }
 
     public void Init() {
-        transform.position = new Vector3(transform.position.x+originalMovementPoints[0].x, originalMovementPoints[0].y, transform.position.z);
+        transform.position = new Vector3(rootPosition.x+originalMovementPoints[0].x, originalMovementPoints[0].y, rootPosition.z);
         startPosition = transform.position;
         lastPosition = startPosition;
         startMoving = true;
+        repeatSwingForever = true;
     }
 
     void FixedUpdate()

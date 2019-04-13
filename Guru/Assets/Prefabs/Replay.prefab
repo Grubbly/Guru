@@ -60,10 +60,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   originalMovementPoints: []
-  startMoving: 0
+  startMoving: 1
   sword: {fileID: 0}
   movementCounter: 0
-  repeatSwingForever: 0
+  repeatSwingForever: 1
 --- !u!1001 &2126831659466795724
 PrefabInstance:
   m_ObjectHideFlags: 0

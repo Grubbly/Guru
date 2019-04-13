@@ -7,13 +7,15 @@ using UnityEngine.SceneManagement;
 public class PopulationManager : MonoBehaviour
 {
     public GameObject botPrefab;
-    public int populationSize = 50;
+    public int populationSize = 16;
     List<GameObject> population = new List<GameObject>();
     public static float elapsed = 0f;
     public float trialTime = 10;
+    public int mutationRate = 10;
 
     public float botSquareSpacing = 10f;
     public int botsPerRow = 4;
+    public SwingRecorder swingRecorder;
     int generation = 1;
 
     GUIStyle gui = new GUIStyle();
@@ -32,6 +34,7 @@ public class PopulationManager : MonoBehaviour
     }
 
     private void Start() {
+        swingRecorder = GameObject.Find("TrainingDummy").GetComponentInChildren<SwingRecorder>();
         origin = transform.position;
         for(int i = 0; i < populationSize; i++) {
 
@@ -62,25 +65,31 @@ public class PopulationManager : MonoBehaviour
 
         Brain brain = offspring.GetComponent<Brain>();
 
-        if(Random.Range(0,100) == 1) {
+        if(Random.Range(0,100) == mutationRate) {
             brain.Init();
             brain.dna.Mutate();
         } else {
             brain.Init();
             brain.dna.Crossover(parent1.GetComponent<Brain>().dna, parent2.GetComponent<Brain>().dna);
         }
-
+        
         return offspring;
+    }
+
+    private void clearAll() {
+        population.Clear();
+        swingRecorder.swordMotionReproducers.Clear();
     }
 
     void Selection() {
         List<GameObject> sortedList = population.OrderBy(o => (o.GetComponent<Brain>().damageTaken)).ToList();
+        Debug.Log("Sorted list size: " + sortedList.Count);
         
-        population.Clear();
+        clearAll();
 
-        for(int i = 0; i < (int) (sortedList.Count/2f)-1; i++) {
-            population.Add(Breed(sortedList[i], sortedList[i+1], i));
-            population.Add(Breed(sortedList[i+1], sortedList[i], i+1));
+        for(int i = 0; i < (int) (sortedList.Count/2f); i++) {
+            population.Add(Breed(sortedList[i], sortedList[i+1], 2*i));
+            population.Add(Breed(sortedList[i+1], sortedList[i], 2*i+1));
         }
 
         foreach(GameObject bot in sortedList) {
