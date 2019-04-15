@@ -16,7 +16,7 @@ public class BlockingZone : MonoBehaviour
         // Debug.Log(gameObject + " Collision entered with " + other.gameObject);
         if(other.tag == "dead") {
             swordMotionReproducer.startMoving = false;
-            enemyWeapon.GetComponent<Rigidbody>().AddForce(-enemyWeapon.transform.forward * thrust);
+            // enemyWeapon.GetComponent<Rigidbody>().AddForce(-enemyWeapon.transform.forward * thrust);
         }
     }
 

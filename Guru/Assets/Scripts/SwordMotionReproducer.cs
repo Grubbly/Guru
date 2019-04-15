@@ -14,6 +14,9 @@ public class SwordMotionReproducer : MonoBehaviour
     private Vector3 lastPosition;
     private Vector3 startPosition;
 
+    public Brain brain;
+    public Transform resetPosition;
+
     private Vector3 rootPosition;
 
     private void Start() {
