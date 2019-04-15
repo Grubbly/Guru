@@ -16,6 +16,6 @@ public class BotStats : MonoBehaviour
     {
         canvas.text = gameObject.name + " Stats:\nDMG: " + agentBrain.damageTaken + "\nVertical Direction: " 
             + agentBrain.verticalSwordDirection + "\nHorizontal Direction: " + agentBrain.horizontalSwordDirection
-            + "\nPrimary Direction: " + agentBrain.primaryDirection + "\nSword Relative to Agent: " + agentBrain.enemyRelativeToPlayer;
+            + "\nAgility: " + agentBrain.agility + "\nSword Relative to Agent: " + agentBrain.enemyRelativeToPlayer;
     }
 }

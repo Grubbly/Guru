@@ -83,7 +83,7 @@ public class PopulationManager : MonoBehaviour
 
     void Selection() {
         List<GameObject> sortedList = population.OrderBy(o => (o.GetComponent<Brain>().damageTaken)).ToList();
-        Debug.Log("Sorted list size: " + sortedList.Count);
+        // Debug.Log("Sorted list size: " + sortedList.Count);
         
         clearAll();
 

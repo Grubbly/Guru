@@ -5,7 +5,7 @@ using Valve.VR.InteractionSystem.Sample;
 
 public class Brain : MonoBehaviour
 {
-    int DNALength = 14;
+    int DNALength = 150;
     public int maxDNAVal = 360;
     public DNA dna;
     public Transform enemySwordTransform;
@@ -21,28 +21,40 @@ public class Brain : MonoBehaviour
     public enum Direction {North, East, South, West};
     public Direction verticalSwordDirection;
     public Direction horizontalSwordDirection;
-    public Direction primaryDirection;
+    public Direction primaryDirection = Direction.North;
     public LockToPoint lockPoint;
-    public List<Transform> snapPoints;
     public Vector3 enemyRelativeToPlayer;
-
+    public Transform snapPoint;
+    public float agility;
     private Vector3 startingPosition;
+    private ControlPointHandler controlPointHandler;
+    
 
     private void Start() {
         if(playerIsEnemy) {
             enemySwordTransform = GameObject.Find("PlayerSwordRoot").GetComponent<Transform>();
         }
+
+        controlPointHandler = GetComponent<ControlPointHandler>();
         previousSwordPosition = enemySwordTransform.position;
         lockPoint = AISword.GetComponent<LockToPoint>();
 
-        foreach (Transform transform in snapPoints)
+        int numAdditionalControlPoints = (dna.GetGene(14)/18);
+        for(int controlPointCount = 0; controlPointCount < numAdditionalControlPoints; controlPointCount++)
+            controlPointHandler.generateRandomControlPoint();
+
+        foreach (GameObject transformGO in controlPointHandler.controlPoints)
         {
-            int index = snapPoints.IndexOf(transform);
+            Transform transform = transformGO.transform;
+            int index = controlPointHandler.controlPoints.IndexOf(transformGO);
             transform.Rotate(dna.GetGene(3*index), dna.GetGene(3*index+1), dna.GetGene(3*index+2), Space.Self);
         }
-        lockPoint.snapTime = ((float)dna.GetGene(12)/dna.GetGene(13));
+
+        agility = ((float)dna.GetGene(12)/dna.GetGene(13));
+        lockPoint.snapTime = agility;
 
         startingPosition = gameObject.transform.position;
+        snapPoint = controlPointHandler.closestControlPoint.transform;
     }
 
     public void Init() {
@@ -78,10 +90,12 @@ public class Brain : MonoBehaviour
                 horizontalSwordDirection = Direction.East;
             
 
-            if(Mathf.Abs(enemyRelativeToPlayer.x) > Mathf.Abs(enemyRelativeToPlayer.y))
-                primaryDirection = horizontalSwordDirection;
-            else
-                primaryDirection = verticalSwordDirection;
+            // if(Mathf.Abs(enemyRelativeToPlayer.x) > Mathf.Abs(enemyRelativeToPlayer.y))
+            //     primaryDirection = horizontalSwordDirection;
+            // else
+            //     primaryDirection = verticalSwordDirection;
+
+            snapPoint = controlPointHandler.closestControlPoint.transform;
         }
     }
 
@@ -93,17 +107,6 @@ public class Brain : MonoBehaviour
         Debug.DrawLine(pos, pos + enemyRelativeToPlayer * 10, Color.red, 2f);
 
         Vector3 AISwordRotation = AISword.transform.localEulerAngles;
-        if (swordPositionMoved)
-        {
-            if(primaryDirection == Direction.North) {
-                lockPoint.snapTo = snapPoints[0];
-            } else if(primaryDirection == Direction.South) {
-                lockPoint.snapTo = snapPoints[1];
-            } else if(primaryDirection == Direction.East) {
-                lockPoint.snapTo = snapPoints[2];
-            } else if(primaryDirection == Direction.West) {
-                lockPoint.snapTo = snapPoints[3];
-            }
-        }
+        lockPoint.snapTo = snapPoint;
     }
 }
