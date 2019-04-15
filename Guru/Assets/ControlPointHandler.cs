@@ -20,10 +20,11 @@ public class ControlPointHandler : MonoBehaviour
         updateClosestControlPoint();
     }
 
-    public void generateRandomControlPoint() {
+    public GameObject generateRandomControlPoint() {
         GameObject newControlPoint = Instantiate(controlPointPrefab, this.transform.position + Random.onUnitSphere, Quaternion.Euler(0,0,0));
         newControlPoint.transform.parent = this.transform;
         controlPoints.Add(newControlPoint);
+        return newControlPoint;
     }
 
     GameObject GetClosestControlPoint()

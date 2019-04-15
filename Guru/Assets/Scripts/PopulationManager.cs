@@ -47,7 +47,7 @@ public class PopulationManager : MonoBehaviour
                 Quaternion.Euler(0,180,0)
             );
 
-            bot.GetComponent<Brain>().Init();
+            bot.GetComponent<Brain>().Init(true);
             population.Add(bot);
         }
     }
@@ -65,9 +65,13 @@ public class PopulationManager : MonoBehaviour
 
         Brain brain = offspring.GetComponent<Brain>();
 
-        if(Random.Range(0,100) == mutationRate) {
+        if(Random.Range(0,100) <= mutationRate) {
             brain.Init();
             brain.dna.Mutate();
+        }
+        if(Random.Range(0,100) <= mutationRate) {
+            brain.Init();
+            brain.dna.FMutate();
         } else {
             brain.Init();
             brain.dna.Crossover(parent1.GetComponent<Brain>().dna, parent2.GetComponent<Brain>().dna);

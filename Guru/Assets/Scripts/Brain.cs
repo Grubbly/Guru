@@ -16,6 +16,7 @@ public class Brain : MonoBehaviour
     public bool playerIsEnemy = false;
     bool alive = true;
     bool swordPositionMoved = true;
+    public bool firstGeneration = false;
     private Vector3 previousSwordPosition;
 
     public enum Direction {North, East, South, West};
@@ -39,9 +40,30 @@ public class Brain : MonoBehaviour
         previousSwordPosition = enemySwordTransform.position;
         lockPoint = AISword.GetComponent<LockToPoint>();
 
+        // Need to store these somehow
+        // Could send in a bunch of genese instead of using sphere
+        // Or store control point position in genes after first generated
         int numAdditionalControlPoints = (dna.GetGene(14)/18);
-        for(int controlPointCount = 0; controlPointCount < numAdditionalControlPoints; controlPointCount++)
-            controlPointHandler.generateRandomControlPoint();
+        for(int controlPointCount = 0; controlPointCount < numAdditionalControlPoints; controlPointCount++) {
+            int offset = controlPointCount*3;
+            if(false) {
+                GameObject newControlPoint = controlPointHandler.generateRandomControlPoint();
+                dna.SetFGene(offset, newControlPoint.transform.position.x);
+                dna.SetFGene(offset + 1, newControlPoint.transform.position.y);
+                dna.SetFGene(offset + 2, newControlPoint.transform.position.z);
+            } else {
+                GameObject newControlPoint = Instantiate(
+                    controlPointHandler.controlPointPrefab, 
+                    new Vector3(
+                        this.transform.position.x + dna.GetFGene(offset), 
+                        this.transform.position.y + dna.GetFGene(offset + 1), 
+                        this.transform.position.z + dna.GetFGene(offset + 2)), 
+                    Quaternion.Euler(0,0,0)
+                );
+                newControlPoint.transform.parent = this.transform;
+                controlPointHandler.controlPoints.Add(newControlPoint);
+            }
+        }
 
         foreach (GameObject transformGO in controlPointHandler.controlPoints)
         {
@@ -57,7 +79,8 @@ public class Brain : MonoBehaviour
         snapPoint = controlPointHandler.closestControlPoint.transform;
     }
 
-    public void Init() {
+    public void Init(bool isFirstGen = false) {
+        firstGeneration = isFirstGen;
         dna = new DNA(DNALength, maxDNAVal);
     }
 
