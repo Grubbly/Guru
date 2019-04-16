@@ -53,13 +53,18 @@ public class PopulationManager : MonoBehaviour
 
         Debug.Log("Loading data from " + archivedPopulationEndpoint);
 
-        RestClient.GetArray<DNAData>(archivedPopulationEndpoint).Then(response => {
+        RestClient.GetArray<DNAData>(archivedPopulationEndpoint + ".json").Then(response => {
             int i = 0;
             foreach (DNAData data in response)
             {
                 DNA newDNA = new DNA(data.genes, data.fGenes, data.dnaLength, data.maxValue);
                 population[i].GetComponent<Brain>().dna = newDNA;
                 i++;
+            }
+        }).Then(() => {
+            foreach (GameObject bot in population)
+            {
+                bot.GetComponent<Brain>().initializeGenes();
             }
         });
     }

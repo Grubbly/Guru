@@ -3310,7 +3310,7 @@ PrefabInstance:
     - target: {fileID: 2327101472591652886, guid: 8e13bc5a79a0e4a49bb183a079e31269,
         type: 3}
       propertyPath: trialTime
-      value: 10
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 2327101472591652886, guid: 8e13bc5a79a0e4a49bb183a079e31269,
         type: 3}
@@ -3335,7 +3335,8 @@ PrefabInstance:
     - target: {fileID: 2327101472591652886, guid: 8e13bc5a79a0e4a49bb183a079e31269,
         type: 3}
       propertyPath: archivedPopulationEndpoint
-      value: https://guru-base.firebaseio.com/archivedSessions/4/15/2019 8:43:09 PM
+      value: https://guru-base.firebaseio.com/archivedSessions/4/16/2019 12:18:18
+        PM/gen8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8e13bc5a79a0e4a49bb183a079e31269, type: 3}
