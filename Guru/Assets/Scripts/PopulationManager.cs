@@ -4,6 +4,7 @@ using UnityEngine;
 using System.Linq;
 using UnityEngine.SceneManagement;
 using Valve.VR.InteractionSystem.Sample;
+using Proyecto26;
 
 public class PopulationManager : MonoBehaviour
 {
@@ -27,6 +28,11 @@ public class PopulationManager : MonoBehaviour
     GUIStyle gui = new GUIStyle();
 
     private Vector3 origin;
+    private int uid;
+
+    private string api = "https://guru-base.firebaseio.com";
+
+    List<GameObject> sortedPopulation;
 
     private void OnGUI() {
         gui.fontSize = 30;
@@ -40,6 +46,7 @@ public class PopulationManager : MonoBehaviour
     }
 
     private void Start() {
+        archivePreviousSession();
         swingRecorder = GameObject.Find("TrainingDummy").GetComponentInChildren<SwingRecorder>();
         origin = transform.position;
         for(int i = 0; i < populationSize; i++) {
@@ -110,18 +117,18 @@ public class PopulationManager : MonoBehaviour
     }
 
     void Selection() {
-        List<GameObject> sortedList = population.OrderBy(o => (o.GetComponent<Brain>().damageTaken)).ToList();
+        sortedPopulation = population.OrderBy(o => (o.GetComponent<Brain>().damageTaken)).ToList();
         
-        bestAgent = sortedList[0];
+        bestAgent = sortedPopulation[0];
         
         clearAll();
 
-        for(int i = 0; i < (int) (sortedList.Count/2f); i++) {
-            population.Add(Breed(sortedList[i], sortedList[i+1], 2*i));
-            population.Add(Breed(sortedList[i+1], sortedList[i], 2*i+1));
+        for(int i = 0; i < (int) (sortedPopulation.Count/2f); i++) {
+            population.Add(Breed(sortedPopulation[i], sortedPopulation[i+1], 2*i));
+            population.Add(Breed(sortedPopulation[i+1], sortedPopulation[i], 2*i+1));
         }
 
-        foreach(GameObject bot in sortedList) {
+        foreach(GameObject bot in sortedPopulation) {
             Destroy(bot);
         }
 
@@ -129,9 +136,38 @@ public class PopulationManager : MonoBehaviour
         generation++;
     }
 
+    private void postDNA() {
+        foreach (GameObject bot in population)
+        {
+            DNA botDNA = bot.GetComponent<Brain>().dna;
+            DNAData botRecord = new DNAData(botDNA.genes, botDNA.fGenes, botDNA.dnaLength, botDNA.maxValue);
+
+            RestClient.Put(api + "/currentSession/" + generation + "/" + bot.GetInstanceID() + ".json", botRecord);
+        }
+    }
+
+    private void deletePreviousDatabaseSession() {
+        RestClient.Delete(api + "/currentSession.json");
+    }
+
+    private void archivePreviousSession() {
+        Debug.Log("ARCHIVE");
+        RestClient.GetArray<DNAData>(api + "/currentSession.json").Then(response => {
+            int i = 0;
+            foreach (DNAData data in response)
+            {
+                RestClient.Put(api + "/archivedSessions/" + System.DateTime.Now + "/" + i + ".json", data);
+                i++;   
+            }
+        }).Then(() => {
+            deletePreviousDatabaseSession();
+        });
+    }
+
     private void Update() {
         elapsed += Time.deltaTime;
         if(elapsed >= trialTime) {
+            postDNA();
             Selection();
             elapsed = 0;
         }
