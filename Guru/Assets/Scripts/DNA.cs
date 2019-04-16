@@ -5,6 +5,7 @@ using UnityEngine;
 public class DNA
 {
     List<int> genes = new List<int>();
+    List<float> fGenes = new List<float>();
     int dnaLength = 0;
     int maxValue = 0;
 
@@ -16,23 +17,33 @@ public class DNA
 
     public void SetRandom() {
         genes.Clear();
+        fGenes.Clear();
         for(int i = 0; i < dnaLength; i++) {
             genes.Add(Random.Range(0, maxValue));
+            fGenes.Add(Random.Range(-maxValue, maxValue)/(1f*maxValue));
         }
     }
 
-    public void SetInt(int genePosition, int value) {
+    public void SetGene(int genePosition, int value) {
         genes[genePosition] = value;
+    }
+
+    public void SetFGene(int genePosition, float value) {
+        fGenes[genePosition] = value;
     }
 
     public void Crossover(DNA d1, DNA d2) {
         for(int i = 0; i < dnaLength; i++) {
             if(i < dnaLength/2.0) {
                 int chromosome = d1.genes[i];
+                float fChromosome = d1.fGenes[i];
                 genes[i] = chromosome;
+                fGenes[i] = fChromosome;
             } else {
                 int chromosome = d2.genes[i];
+                float fChromosome = d2.fGenes[i];
                 genes[i] = chromosome;
+                fGenes[i] = fChromosome;
             }
         }
     }
@@ -41,7 +52,15 @@ public class DNA
         genes[Random.Range(0,dnaLength)] = Random.Range(0, maxValue);
     }
 
+    public void FMutate() {
+        fGenes[Random.Range(0,dnaLength)] = Random.Range(-maxValue, maxValue)/maxValue;
+    }
+
     public int GetGene(int genePosition) {
         return genes[genePosition];
+    }
+
+    public float GetFGene(int genePosition) {
+        return fGenes[genePosition];
     }
 }

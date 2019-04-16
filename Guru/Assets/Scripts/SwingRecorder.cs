@@ -24,7 +24,7 @@ public class SwingRecorder : MonoBehaviour
         swordMotionReproducers.Add(GameObject.Find("Replay").GetComponentInChildren<SwordMotionReproducer>());
     }
 
-    private void distributeSlashDataToAgents() {
+    public void distributeSlashDataToAgents() {
         foreach(SwordMotionReproducer swordMotionReproducer in swordMotionReproducers) {
             swordMotionReproducer.originalMovementPoints = swordPath;
             swordMotionReproducer.Init();
