@@ -9,6 +9,13 @@ public class DNA
     public int dnaLength = 0;
     public int maxValue = 0;
 
+    public DNA(List<int> _genes, List<float> _fGenes, int len, int val) {
+        genes = _genes;
+        fGenes = _fGenes;
+        dnaLength = len;
+        maxValue = val;   
+    }
+
     public DNA(int length, int value) {
         dnaLength = length;
         maxValue = value;

@@ -5,6 +5,8 @@ using System.Linq;
 using UnityEngine.SceneManagement;
 using Valve.VR.InteractionSystem.Sample;
 using Proyecto26;
+using UnityEngine.Networking;
+
 
 public class PopulationManager : MonoBehaviour
 {
@@ -18,7 +20,7 @@ public class PopulationManager : MonoBehaviour
     public float botSquareSpacing = 10f;
     public int botsPerRow = 4;
     public SwingRecorder swingRecorder;
-    int generation = 1;
+    int generation = 0;
 
     public GameObject bestAgent;
 
@@ -31,6 +33,8 @@ public class PopulationManager : MonoBehaviour
     private int uid;
 
     private string api = "https://guru-base.firebaseio.com";
+    public bool databasing;
+    public string archivedPopulationEndpoint;
 
     List<GameObject> sortedPopulation;
 
@@ -45,10 +49,28 @@ public class PopulationManager : MonoBehaviour
         GUI.EndGroup();
     }
 
+    public void loadArchivedPopulation(){
+
+        Debug.Log("Loading data from " + archivedPopulationEndpoint);
+
+        RestClient.GetArray<DNAData>(archivedPopulationEndpoint).Then(response => {
+            int i = 0;
+            foreach (DNAData data in response)
+            {
+                DNA newDNA = new DNA(data.genes, data.fGenes, data.dnaLength, data.maxValue);
+                population[i].GetComponent<Brain>().dna = newDNA;
+                i++;
+            }
+        });
+    }
+
     private void Start() {
-        archivePreviousSession();
+        if(databasing)
+            archivePreviousSession();
+
         swingRecorder = GameObject.Find("TrainingDummy").GetComponentInChildren<SwingRecorder>();
         origin = transform.position;
+
         for(int i = 0; i < populationSize; i++) {
 
             GameObject bot = Instantiate(
@@ -63,6 +85,10 @@ public class PopulationManager : MonoBehaviour
             bot.GetComponent<Brain>().Init(true);
             population.Add(bot);
         }
+
+        if(archivedPopulationEndpoint.Length > 0 && databasing) {
+            loadArchivedPopulation();
+        } 
     }
 
     GameObject Breed(GameObject parent1, GameObject parent2, int i) {
@@ -137,12 +163,14 @@ public class PopulationManager : MonoBehaviour
     }
 
     private void postDNA() {
+        int i = 0;
         foreach (GameObject bot in population)
         {
             DNA botDNA = bot.GetComponent<Brain>().dna;
             DNAData botRecord = new DNAData(botDNA.genes, botDNA.fGenes, botDNA.dnaLength, botDNA.maxValue);
 
-            RestClient.Put(api + "/currentSession/" + generation + "/" + bot.GetInstanceID() + ".json", botRecord);
+            RestClient.Put(api + "/currentSession/" + generation + "/" + i + ".json", botRecord);
+            i++;
         }
     }
 
@@ -151,13 +179,15 @@ public class PopulationManager : MonoBehaviour
     }
 
     private void archivePreviousSession() {
-        Debug.Log("ARCHIVE");
-        RestClient.GetArray<DNAData>(api + "/currentSession.json").Then(response => {
+        RestClient.GetArray<DNAData>("https://guru-base.firebaseio.com/currentSession/1.json").Then(response => {
+
+            Debug.Log(JsonHelper.ArrayToJsonString<DNAData>(response, true)); // YO
+
             int i = 0;
-            foreach (DNAData data in response)
+            foreach (DNAData item in response)
             {
-                RestClient.Put(api + "/archivedSessions/" + System.DateTime.Now + "/" + i + ".json", data);
-                i++;   
+                RestClient.Put(api + "/archivedSessions/" + System.DateTime.Now + "/" + i + ".json", item);
+                i++; 
             }
         }).Then(() => {
             deletePreviousDatabaseSession();
@@ -167,7 +197,10 @@ public class PopulationManager : MonoBehaviour
     private void Update() {
         elapsed += Time.deltaTime;
         if(elapsed >= trialTime) {
-            postDNA();
+
+            if(databasing)
+                postDNA();
+                
             Selection();
             elapsed = 0;
         }

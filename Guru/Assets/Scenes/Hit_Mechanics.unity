@@ -3332,6 +3332,11 @@ PrefabInstance:
       propertyPath: playerSwordTracker
       value: 
       objectReference: {fileID: 724316540}
+    - target: {fileID: 2327101472591652886, guid: 8e13bc5a79a0e4a49bb183a079e31269,
+        type: 3}
+      propertyPath: archivedPopulationEndpoint
+      value: https://guru-base.firebaseio.com/archivedSessions/4/15/2019 8:43:09 PM
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8e13bc5a79a0e4a49bb183a079e31269, type: 3}
 --- !u!33 &3027350250917514368
