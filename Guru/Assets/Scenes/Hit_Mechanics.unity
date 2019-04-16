@@ -714,6 +714,18 @@ Transform:
   m_Father: {fileID: 57459084}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+--- !u!1 &724316540 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6747550666914303636, guid: 7b0025b4b0fed2749ae9e9aa75f37f0e,
+    type: 3}
+  m_PrefabInstance: {fileID: 6747550667332435944}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &724316541 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6747550666914303637, guid: 7b0025b4b0fed2749ae9e9aa75f37f0e,
+    type: 3}
+  m_PrefabInstance: {fileID: 6747550667332435944}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &860019276
 GameObject:
   m_ObjectHideFlags: 0
@@ -3310,6 +3322,16 @@ PrefabInstance:
       propertyPath: populationSize
       value: 16
       objectReference: {fileID: 0}
+    - target: {fileID: 2327101472591652886, guid: 8e13bc5a79a0e4a49bb183a079e31269,
+        type: 3}
+      propertyPath: playerSword
+      value: 
+      objectReference: {fileID: 724316541}
+    - target: {fileID: 2327101472591652886, guid: 8e13bc5a79a0e4a49bb183a079e31269,
+        type: 3}
+      propertyPath: playerSwordTracker
+      value: 
+      objectReference: {fileID: 724316540}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8e13bc5a79a0e4a49bb183a079e31269, type: 3}
 --- !u!33 &3027350250917514368

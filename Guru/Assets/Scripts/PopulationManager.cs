@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using UnityEngine.SceneManagement;
+using Valve.VR.InteractionSystem.Sample;
 
 public class PopulationManager : MonoBehaviour
 {
@@ -17,6 +18,11 @@ public class PopulationManager : MonoBehaviour
     public int botsPerRow = 4;
     public SwingRecorder swingRecorder;
     int generation = 1;
+
+    public GameObject bestAgent;
+
+    public GameObject playerSwordTracker;
+    private GameObject oldBestAgent;
 
     GUIStyle gui = new GUIStyle();
 
@@ -85,9 +91,28 @@ public class PopulationManager : MonoBehaviour
         swingRecorder.swordMotionReproducers.Clear();
     }
 
+    void spawnBestAgent() {
+        if(oldBestAgent)
+            Destroy(oldBestAgent);
+
+        oldBestAgent = Instantiate(bestAgent, new Vector3(2.5f,0.75f, -1f), Quaternion.Euler(0,270,0));
+        oldBestAgent.GetComponent<Brain>().enemySwordTransform = playerSwordTracker.transform;
+        oldBestAgent.GetComponent<ControlPointHandler>().enemySword = playerSwordTracker.transform;
+        oldBestAgent.transform.Find("Replay").gameObject.SetActive(false);
+        
+        GameObject AISword = oldBestAgent.transform.Find("AISword").gameObject;
+        
+        AISword.GetComponent<LockToPoint>().enabled = true;
+        AISword.transform.Find("Blade Collider").GetComponent<BlockingZone>().enemyWeapon = playerSwordTracker;
+        oldBestAgent.GetComponent<Brain>().enabled = true;
+        oldBestAgent.GetComponent<BotStats>().enabled = true;
+        oldBestAgent.GetComponent<ControlPointHandler>().enabled = true;
+    }
+
     void Selection() {
         List<GameObject> sortedList = population.OrderBy(o => (o.GetComponent<Brain>().damageTaken)).ToList();
-        // Debug.Log("Sorted list size: " + sortedList.Count);
+        
+        bestAgent = sortedList[0];
         
         clearAll();
 
@@ -100,6 +125,7 @@ public class PopulationManager : MonoBehaviour
             Destroy(bot);
         }
 
+        spawnBestAgent();
         generation++;
     }
 

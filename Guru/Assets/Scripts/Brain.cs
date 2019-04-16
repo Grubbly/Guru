@@ -12,8 +12,6 @@ public class Brain : MonoBehaviour
     public GameObject AISword;
     public float MAXHP = 100;
     public int damageTaken = 0;
-
-    public bool playerIsEnemy = false;
     bool alive = true;
     bool swordPositionMoved = true;
     public bool firstGeneration = false;
@@ -32,10 +30,6 @@ public class Brain : MonoBehaviour
     
 
     private void Start() {
-        if(playerIsEnemy) {
-            enemySwordTransform = GameObject.Find("PlayerSwordRoot").GetComponent<Transform>();
-        }
-
         controlPointHandler = GetComponent<ControlPointHandler>();
         previousSwordPosition = enemySwordTransform.position;
         lockPoint = AISword.GetComponent<LockToPoint>();
@@ -46,23 +40,16 @@ public class Brain : MonoBehaviour
         int numAdditionalControlPoints = (dna.GetGene(14)/18);
         for(int controlPointCount = 0; controlPointCount < numAdditionalControlPoints; controlPointCount++) {
             int offset = controlPointCount*3;
-            if(false) {
-                GameObject newControlPoint = controlPointHandler.generateRandomControlPoint();
-                dna.SetFGene(offset, newControlPoint.transform.position.x);
-                dna.SetFGene(offset + 1, newControlPoint.transform.position.y);
-                dna.SetFGene(offset + 2, newControlPoint.transform.position.z);
-            } else {
-                GameObject newControlPoint = Instantiate(
-                    controlPointHandler.controlPointPrefab, 
-                    new Vector3(
-                        this.transform.position.x + dna.GetFGene(offset), 
-                        this.transform.position.y + dna.GetFGene(offset + 1), 
-                        this.transform.position.z + dna.GetFGene(offset + 2)), 
-                    Quaternion.Euler(0,0,0)
-                );
-                newControlPoint.transform.parent = this.transform;
-                controlPointHandler.controlPoints.Add(newControlPoint);
-            }
+            GameObject newControlPoint = Instantiate(
+                controlPointHandler.controlPointPrefab, 
+                new Vector3(
+                    this.transform.position.x + dna.GetFGene(offset), 
+                    this.transform.position.y + dna.GetFGene(offset + 1), 
+                    this.transform.position.z + dna.GetFGene(offset + 2)), 
+                Quaternion.Euler(0,0,0)
+            );
+            newControlPoint.transform.parent = this.transform;
+            controlPointHandler.controlPoints.Add(newControlPoint);
         }
 
         foreach (GameObject transformGO in controlPointHandler.controlPoints)
