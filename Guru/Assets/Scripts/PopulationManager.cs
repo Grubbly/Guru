@@ -33,7 +33,7 @@ public class PopulationManager : MonoBehaviour
     private int uid;
 
     private string api = "https://guru-base.firebaseio.com";
-    public bool databasing;
+    public bool databasing = true;
     public string archivedPopulationEndpoint;
 
     List<GameObject> sortedPopulation;
@@ -163,15 +163,18 @@ public class PopulationManager : MonoBehaviour
     }
 
     private void postDNA() {
-        int i = 0;
-        foreach (GameObject bot in population)
-        {
-            DNA botDNA = bot.GetComponent<Brain>().dna;
-            DNAData botRecord = new DNAData(botDNA.genes, botDNA.fGenes, botDNA.dnaLength, botDNA.maxValue);
+        SerializedGeneration currentGen = new SerializedGeneration(generation);
+        RestClient.Put(api+"/generation.json", currentGen).Then((response) => {
+            int i = 0;
+            foreach (GameObject bot in population)
+            {
+                DNA botDNA = bot.GetComponent<Brain>().dna;
+                DNAData botRecord = new DNAData(botDNA.genes, botDNA.fGenes, botDNA.dnaLength, botDNA.maxValue);
 
-            RestClient.Put(api + "/currentSession/" + generation + "/" + i + ".json", botRecord);
-            i++;
-        }
+                RestClient.Put(api + "/currentSession/" + (generation-1) + "/" + i + ".json", botRecord);
+                i++;
+            }
+        }); 
     }
 
     private void deletePreviousDatabaseSession() {
@@ -179,18 +182,17 @@ public class PopulationManager : MonoBehaviour
     }
 
     private void archivePreviousSession() {
-        RestClient.GetArray<DNAData>("https://guru-base.firebaseio.com/currentSession/1.json").Then(response => {
-
-            Debug.Log(JsonHelper.ArrayToJsonString<DNAData>(response, true)); // YO
-
-            int i = 0;
-            foreach (DNAData item in response)
-            {
-                RestClient.Put(api + "/archivedSessions/" + System.DateTime.Now + "/" + i + ".json", item);
-                i++; 
-            }
-        }).Then(() => {
-            deletePreviousDatabaseSession();
+        RestClient.Get<SerializedGeneration>(api+"/generation.json").Then(previousGen => {
+            RestClient.GetArray<DNAData>("https://guru-base.firebaseio.com/currentSession/" + previousGen.generation + ".json").Then((response) => {
+                int i = 0;
+                foreach (DNAData item in response)
+                {
+                    RestClient.Put(api + "/archivedSessions/" + System.DateTime.Now + "/gen" + previousGen.generation + "/" + i + ".json", item);
+                    i++; 
+                }
+            }).Then(() => {
+                deletePreviousDatabaseSession();
+            }); 
         });
     }
 
@@ -200,7 +202,7 @@ public class PopulationManager : MonoBehaviour
 
             if(databasing)
                 postDNA();
-                
+
             Selection();
             elapsed = 0;
         }
