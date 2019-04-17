@@ -25,6 +25,9 @@ public class Brain : MonoBehaviour
     public Vector3 enemyRelativeToPlayer;
     public Transform snapPoint;
     public float agility;
+    public float blockingTime = 0;
+
+    public bool isBestAgent = false;
     private Vector3 startingPosition;
     private ControlPointHandler controlPointHandler;
     
@@ -33,6 +36,8 @@ public class Brain : MonoBehaviour
         // Need to store these somehow
         // Could send in a bunch of genese instead of using sphere
         // Or store control point position in genes after first generated
+        if(isBestAgent)
+            return;
 
         int numAdditionalControlPoints = (dna.GetGene(14)/18);
         for(int controlPointCount = 0; controlPointCount < numAdditionalControlPoints; controlPointCount++) {
@@ -107,12 +112,6 @@ public class Brain : MonoBehaviour
                 horizontalSwordDirection = Direction.West;
             else
                 horizontalSwordDirection = Direction.East;
-            
-
-            // if(Mathf.Abs(enemyRelativeToPlayer.x) > Mathf.Abs(enemyRelativeToPlayer.y))
-            //     primaryDirection = horizontalSwordDirection;
-            // else
-            //     primaryDirection = verticalSwordDirection;
 
             snapPoint = controlPointHandler.closestControlPoint.transform;
         }

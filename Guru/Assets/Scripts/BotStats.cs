@@ -6,6 +6,7 @@ public class BotStats : MonoBehaviour
 {
     private Brain agentBrain;
     public TextMesh canvas;
+    public BlockingZone blockingZone;
     void Start()
     {
         agentBrain = GetComponent<Brain>();
@@ -14,8 +15,10 @@ public class BotStats : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        canvas.text = gameObject.name + " Stats:\nDMG: " + agentBrain.damageTaken + "\nVertical Direction: " 
-            + agentBrain.verticalSwordDirection + "\nHorizontal Direction: " + agentBrain.horizontalSwordDirection
-            + "\nAgility: " + agentBrain.agility + "\nSword Relative to Agent: " + agentBrain.enemyRelativeToPlayer;
+        canvas.text = gameObject.name + " Stats:\nDMG: " + agentBrain.damageTaken
+            + "\nAgility: " + agentBrain.agility 
+            + "\nElapsed Blocking Time: " + (agentBrain.blockingTime+blockingZone.elapsed) 
+            + "\nSword Relative to Agent: " + agentBrain.enemyRelativeToPlayer
+            + "\nScore (lower is better): " + (agentBrain.damageTaken+agentBrain.blockingTime+blockingZone.elapsed);
     }
 }

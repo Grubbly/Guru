@@ -4,19 +4,36 @@ using UnityEngine;
 
 public class BlockingZone : MonoBehaviour
 {
-    public GameObject enemyWeapon;
     public float thrust = 5f;
-    private SwordMotionReproducer swordMotionReproducer;
+    public SwordMotionReproducer swordMotionReproducer;
+    public float elapsed = 0;
+    public float totalElapsed = 0;
 
-    private void Start() {
-        swordMotionReproducer = enemyWeapon.GetComponent<SwordMotionReproducer>();
-    }
+    public Brain brain;
 
     private void OnTriggerEnter(Collider other) {
         // Debug.Log(gameObject + " Collision entered with " + other.gameObject);
         if(other.tag == "dead") {
             swordMotionReproducer.startMoving = false;
-            // enemyWeapon.GetComponent<Rigidbody>().AddForce(-enemyWeapon.transform.forward * thrust);
+        }
+    }
+
+    private void countBlockingTime(){
+        totalElapsed += elapsed;
+        brain.blockingTime = totalElapsed;
+        elapsed = 0;
+    }
+    private void OnDestroy() {
+        countBlockingTime();
+    }
+
+    private void Update() {
+        if(swordMotionReproducer.startMoving) {
+            elapsed += Time.deltaTime;
+        } else {
+            if(elapsed > 0) {
+                countBlockingTime();
+            }
         }
     }
 

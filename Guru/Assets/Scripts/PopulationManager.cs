@@ -20,7 +20,7 @@ public class PopulationManager : MonoBehaviour
     public float botSquareSpacing = 10f;
     public int botsPerRow = 4;
     public SwingRecorder swingRecorder;
-    int generation = 0;
+    public int generation = 0;
 
     public GameObject bestAgent;
 
@@ -134,21 +134,25 @@ public class PopulationManager : MonoBehaviour
             Destroy(oldBestAgent);
 
         oldBestAgent = Instantiate(bestAgent, new Vector3(2.5f,0.75f, -1f), Quaternion.Euler(0,270,0));
-        oldBestAgent.GetComponent<Brain>().enemySwordTransform = playerSwordTracker.transform;
+        
+        Brain bestAgentBrain = oldBestAgent.GetComponent<Brain>();
+        
+        bestAgentBrain.isBestAgent = true;
+        bestAgentBrain.enemySwordTransform = playerSwordTracker.transform;
         oldBestAgent.GetComponent<ControlPointHandler>().enemySword = playerSwordTracker.transform;
         oldBestAgent.transform.Find("Replay").gameObject.SetActive(false);
         
         GameObject AISword = oldBestAgent.transform.Find("AISword").gameObject;
         
         AISword.GetComponent<LockToPoint>().enabled = true;
-        AISword.transform.Find("Blade Collider").GetComponent<BlockingZone>().enemyWeapon = playerSwordTracker;
+        // AISword.transform.Find("Blade Collider").GetComponent<BlockingZone>().enemyWeapon = playerSwordTracker;
         oldBestAgent.GetComponent<Brain>().enabled = true;
         oldBestAgent.GetComponent<BotStats>().enabled = true;
         oldBestAgent.GetComponent<ControlPointHandler>().enabled = true;
     }
 
     void Selection() {
-        sortedPopulation = population.OrderBy(o => (o.GetComponent<Brain>().damageTaken)).ToList();
+        sortedPopulation = population.OrderBy(o => (o.GetComponent<Brain>().damageTaken + o.GetComponent<Brain>().blockingTime)).ToList();
         
         bestAgent = sortedPopulation[0];
         
@@ -173,13 +177,16 @@ public class PopulationManager : MonoBehaviour
             int i = 0;
             foreach (GameObject bot in population)
             {
-                DNA botDNA = bot.GetComponent<Brain>().dna;
-                DNAData botRecord = new DNAData(botDNA.genes, botDNA.fGenes, botDNA.dnaLength, botDNA.maxValue);
+                Brain botBrain = bot.GetComponent<Brain>();
+                DNA botDNA = botBrain.dna;
+                float score = botBrain.damageTaken + botBrain.blockingTime;
+
+                DNAData botRecord = new DNAData(botDNA.genes, botDNA.fGenes, botDNA.dnaLength, botDNA.maxValue, score);
 
                 RestClient.Put(api + "/currentSession/" + (generation-1) + "/" + i + ".json", botRecord);
                 i++;
             }
-        }); 
+        });
     }
 
     private void deletePreviousDatabaseSession() {
