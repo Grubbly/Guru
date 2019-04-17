@@ -14,10 +14,11 @@ public class DNAData
 
     public DNAData(List<int> genes) { }
 
-    public DNAData(List<int> _genes, List<float> _fGenes, int len, int val, float score) {
+    public DNAData(List<int> _genes, List<float> _fGenes, int len, int val, float _score) {
         genes = _genes;
         fGenes = _fGenes;
         dnaLength = len;
         maxValue = val;   
+        score = _score;
     }
 }

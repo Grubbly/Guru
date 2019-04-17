@@ -152,7 +152,7 @@ public class PopulationManager : MonoBehaviour
     }
 
     void Selection() {
-        sortedPopulation = population.OrderBy(o => (o.GetComponent<Brain>().damageTaken + o.GetComponent<Brain>().blockingTime)).ToList();
+        sortedPopulation = population.OrderBy(o => (o.GetComponent<Brain>().damageTaken + o.GetComponent<Brain>().blockingTime + o.GetComponent<Brain>().blockingZone.elapsed)).ToList();
         
         bestAgent = sortedPopulation[0];
         
@@ -171,15 +171,15 @@ public class PopulationManager : MonoBehaviour
         generation++;
     }
 
-    private void postDNA() {
+    private void postDNA(List<GameObject> snapShotPopulation, List<float> scoreList) {
         SerializedGeneration currentGen = new SerializedGeneration(generation);
         RestClient.Put(api+"/generation.json", currentGen).Then((response) => {
             int i = 0;
-            foreach (GameObject bot in population)
+            foreach (GameObject bot in snapShotPopulation)
             {
                 Brain botBrain = bot.GetComponent<Brain>();
                 DNA botDNA = botBrain.dna;
-                float score = botBrain.damageTaken + botBrain.blockingTime;
+                float score = scoreList[i];
 
                 DNAData botRecord = new DNAData(botDNA.genes, botDNA.fGenes, botDNA.dnaLength, botDNA.maxValue, score);
 
@@ -211,17 +211,26 @@ public class PopulationManager : MonoBehaviour
     private void Update() {
         elapsed += Time.deltaTime;
         if(elapsed >= trialTime) {
+            
+            List<float> scoreList = new List<float>();
+            foreach (GameObject bot in population)
+            {
+                Brain botBrain = bot.GetComponent<Brain>();
+                float score = botBrain.damageTaken + botBrain.blockingTime + botBrain.blockingZone.elapsed;
+                scoreList.Add(score);
+                Debug.Log(score);
+            }
 
-            if(databasing)
-                postDNA();
+            if(databasing) 
+                postDNA(population, scoreList);
 
             Selection();
             elapsed = 0;
+            
         }
 
         if(Input.GetKeyDown(KeyCode.R)) {
             SceneManager.LoadScene(0);
         }
     }
-
 }

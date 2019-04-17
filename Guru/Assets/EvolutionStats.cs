@@ -14,6 +14,8 @@ public class EvolutionStats : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        canvas.text = "Generation: " + populationManager.generation + "\n" + string.Format("Time: {0:0.00}", PopulationManager.elapsed) + "\nPopulation: " + populationManager.populationSize;
+        canvas.text = "Generation: " + populationManager.generation 
+        + "\n" + string.Format("Time: {0:0.00}", PopulationManager.elapsed) 
+        + "\nPopulation: " + populationManager.populationSize;
     }
 }

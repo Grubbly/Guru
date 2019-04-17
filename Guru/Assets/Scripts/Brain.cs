@@ -30,6 +30,7 @@ public class Brain : MonoBehaviour
     public bool isBestAgent = false;
     private Vector3 startingPosition;
     private ControlPointHandler controlPointHandler;
+    public BlockingZone blockingZone;
     
 
     public void initializeGenes(bool modifying = false) {
