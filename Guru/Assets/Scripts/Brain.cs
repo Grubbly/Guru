@@ -25,18 +25,21 @@ public class Brain : MonoBehaviour
     public Vector3 enemyRelativeToPlayer;
     public Transform snapPoint;
     public float agility;
+    public float blockingTime = 0;
+
+    public bool isBestAgent = false;
     private Vector3 startingPosition;
     private ControlPointHandler controlPointHandler;
+    public BlockingZone blockingZone;
     
 
-    private void Start() {
-        controlPointHandler = GetComponent<ControlPointHandler>();
-        previousSwordPosition = enemySwordTransform.position;
-        lockPoint = AISword.GetComponent<LockToPoint>();
-
+    public void initializeGenes(bool modifying = false) {
         // Need to store these somehow
         // Could send in a bunch of genese instead of using sphere
         // Or store control point position in genes after first generated
+        if(isBestAgent)
+            return;
+
         int numAdditionalControlPoints = (dna.GetGene(14)/18);
         for(int controlPointCount = 0; controlPointCount < numAdditionalControlPoints; controlPointCount++) {
             int offset = controlPointCount*3;
@@ -49,7 +52,11 @@ public class Brain : MonoBehaviour
                 Quaternion.Euler(0,0,0)
             );
             newControlPoint.transform.parent = this.transform;
-            controlPointHandler.controlPoints.Add(newControlPoint);
+
+            if(modifying)
+                controlPointHandler.controlPoints[4+controlPointCount] = (newControlPoint);
+            else
+                controlPointHandler.controlPoints.Add(newControlPoint);
         }
 
         foreach (GameObject transformGO in controlPointHandler.controlPoints)
@@ -61,6 +68,14 @@ public class Brain : MonoBehaviour
 
         agility = ((float)dna.GetGene(12)/dna.GetGene(13));
         lockPoint.snapTime = agility;
+    }
+
+    private void Start() {
+        controlPointHandler = GetComponent<ControlPointHandler>();
+        previousSwordPosition = enemySwordTransform.position;
+        lockPoint = AISword.GetComponent<LockToPoint>();
+
+        initializeGenes();
 
         startingPosition = gameObject.transform.position;
         snapPoint = controlPointHandler.closestControlPoint.transform;
@@ -98,12 +113,6 @@ public class Brain : MonoBehaviour
                 horizontalSwordDirection = Direction.West;
             else
                 horizontalSwordDirection = Direction.East;
-            
-
-            // if(Mathf.Abs(enemyRelativeToPlayer.x) > Mathf.Abs(enemyRelativeToPlayer.y))
-            //     primaryDirection = horizontalSwordDirection;
-            // else
-            //     primaryDirection = verticalSwordDirection;
 
             snapPoint = controlPointHandler.closestControlPoint.transform;
         }

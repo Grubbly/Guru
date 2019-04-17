@@ -4,10 +4,17 @@ using UnityEngine;
 
 public class DNA
 {
-    List<int> genes = new List<int>();
-    List<float> fGenes = new List<float>();
-    int dnaLength = 0;
-    int maxValue = 0;
+    public List<int> genes = new List<int>();
+    public List<float> fGenes = new List<float>();
+    public int dnaLength = 0;
+    public int maxValue = 0;
+
+    public DNA(List<int> _genes, List<float> _fGenes, int len, int val) {
+        genes = _genes;
+        fGenes = _fGenes;
+        dnaLength = len;
+        maxValue = val;   
+    }
 
     public DNA(int length, int value) {
         dnaLength = length;

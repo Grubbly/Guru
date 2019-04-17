@@ -7,7 +7,9 @@ public class FaceToward : MonoBehaviour
     public Transform player;
     public string gameObjectName;
     private void Start() {
-        player = GameObject.Find(gameObjectName).GetComponent<Transform>();
+        if(!player) {
+            player = GameObject.Find(gameObjectName).GetComponent<Transform>();
+        }
     }
 
     private void Update() {
