@@ -158,16 +158,17 @@ public class PopulationManager : MonoBehaviour
         
         clearAll();
 
-        for(int i = 0; i < (int) (sortedPopulation.Count/2f); i++) {
+        for(int i = 0; i < (int) (sortedPopulation.Count/2f); i++) { 
             population.Add(Breed(sortedPopulation[i], sortedPopulation[i+1], 2*i));
             population.Add(Breed(sortedPopulation[i+1], sortedPopulation[i], 2*i+1));
         }
+        Destroy(population[populationSize-1]);
+        population[population.Count-1] = Breed(bestAgent,bestAgent,populationSize-1);
+        spawnBestAgent();
 
         foreach(GameObject bot in sortedPopulation) {
             Destroy(bot);
         }
-
-        spawnBestAgent();
         generation++;
     }
 
@@ -218,7 +219,6 @@ public class PopulationManager : MonoBehaviour
                 Brain botBrain = bot.GetComponent<Brain>();
                 float score = botBrain.damageTaken + botBrain.blockingTime + botBrain.blockingZone.elapsed;
                 scoreList.Add(score);
-                Debug.Log(score);
             }
 
             if(databasing) 
