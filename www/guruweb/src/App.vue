@@ -7,7 +7,6 @@
     <div class="container">
       <h1>Current Generation</h1>
       <div class="orange lighten-3">
-        yo
         <CurrentGenChart />
       </div>
       <Chart msg="Archived Generations"/>

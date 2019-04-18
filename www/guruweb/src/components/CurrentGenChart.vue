@@ -1,6 +1,5 @@
 <template>
     <div class="currentgen">
-        yo
         <line-chart :chart-data="data" :options="options"></line-chart>
     </div>
 </template>
@@ -20,13 +19,13 @@ let config = {
 
 let app = Firebase.initializeApp(config)
 let db = app.database()
-let currentAgentsRef = db.ref("currentSession/0")
+let currentAgentsRef = db.ref("currentSession")
 
 export default {
     name: 'CurrentGenChart',
     data() {
         return {
-            data: null,
+            data: {},
             bestScores: [],
             options: {
                 responsive: true,
@@ -34,8 +33,8 @@ export default {
                 scales:{
                 yAxes:[{
                     ticks: {
-                    suggestedMax: 100,
-                    beginAtZero: true
+                        suggestedMax: 100,
+                        beginAtZero: true
                     }
                 }]
                 }
@@ -52,25 +51,24 @@ export default {
         db.ref("currentSession");
         db.ref().on('value',(snapshot) => {
             let currentGenerations = snapshot.val().currentSession
-            let genLabels = []
-            currentGenerations.forEach((gen,index) => {
-                let min = Infinity
-                genLabels.push("Gen " + index)
-                gen.forEach(bot => {
-                    min = Math.min(min, bot.score)
-                })
-                this.bestScores.push(100/min)
-            });
-            this.bestScores
-            console.log("GenLabels: ", genLabels)
-
-            this.data = {
-                labels: genLabels,
-                datasets: [{
-                    label: "Best Score",
-                    backgroundColor: "red",
-                    data: this.bestScores
-                }]
+            if(currentGenerations !== undefined) {
+                let genLabels = []
+                currentGenerations.forEach((gen,index) => {
+                    let min = -Infinity
+                    genLabels.push("Gen " + index)
+                    Object.values(gen).forEach(bot => {
+                        min = Math.min(min, bot.score)
+                    })
+                    this.bestScores.push(min)
+                });
+                this.data = {
+                    labels: genLabels,
+                    datasets: [{
+                        label: "Best Score",
+                        backgroundColor: "red",
+                        data: this.bestScores
+                    }]
+                }
             }
         })
     }
