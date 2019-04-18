@@ -218,7 +218,6 @@ public class PopulationManager : MonoBehaviour
                 Brain botBrain = bot.GetComponent<Brain>();
                 float score = botBrain.damageTaken + botBrain.blockingTime + botBrain.blockingZone.elapsed;
                 scoreList.Add(score);
-                Debug.Log(score);
             }
 
             if(databasing) 
