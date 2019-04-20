@@ -96,7 +96,7 @@ public class PopulationManager : MonoBehaviour
         } 
     }
 
-    GameObject Breed(GameObject parent1, GameObject parent2, int i) {
+    GameObject Breed(GameObject parent1, GameObject parent2, int i, bool mutate = true) {
         //TODO: Remove startingPos[0]
         GameObject offspring = Instantiate(
             botPrefab, 
@@ -109,11 +109,11 @@ public class PopulationManager : MonoBehaviour
 
         Brain brain = offspring.GetComponent<Brain>();
 
-        if(Random.Range(0,100) <= mutationRate) {
+        if(Random.Range(0,100) <= mutationRate && mutate) {
             brain.Init();
             brain.dna.Mutate();
         }
-        if(Random.Range(0,100) <= mutationRate) {
+        if(Random.Range(0,100) <= mutationRate && mutate) {
             brain.Init();
             brain.dna.FMutate();
         } else {
@@ -163,7 +163,7 @@ public class PopulationManager : MonoBehaviour
             population.Add(Breed(sortedPopulation[i+1], sortedPopulation[i], 2*i+1));
         }
         Destroy(population[populationSize-1]);
-        population[population.Count-1] = Breed(bestAgent,bestAgent,populationSize-1);
+        population[population.Count-1] = Breed(bestAgent,bestAgent,populationSize-1,false);
         spawnBestAgent();
 
         foreach(GameObject bot in sortedPopulation) {
