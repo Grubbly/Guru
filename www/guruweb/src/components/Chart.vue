@@ -23,6 +23,7 @@ export default {
           data: [],
           labels: [],
           bot: null,
+          DAYFILTER: 20,
           chartTimestamps: [],
           options: {
             responsive: true,
