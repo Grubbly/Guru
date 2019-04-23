@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Proyecto26;
+using UnityEngine.Networking;
 
 public class SwingRecorder : MonoBehaviour
 {
@@ -13,6 +15,8 @@ public class SwingRecorder : MonoBehaviour
     public Material swordInsideColor;
 
     private Material idleColor;
+
+    private string api = "https://guru-base.firebaseio.com";
 
     private void Start() {
         sword = GameObject.Find("PlayerSword");
@@ -27,7 +31,12 @@ public class SwingRecorder : MonoBehaviour
     public void distributeSlashDataToAgents() {
         foreach(SwordMotionReproducer swordMotionReproducer in swordMotionReproducers) {
             swordMotionReproducer.originalMovementPoints = swordPath;
-            swordMotionReproducer.Init();
+            
+            try{
+                swordMotionReproducer.Init();
+            } catch {
+                Debug.Log("Error in swordMotionReproducer.Init()");
+            }
 
             if(repeatSwingsForever)
                 swordMotionReproducer.repeatSwingForever = true;
@@ -51,6 +60,8 @@ public class SwingRecorder : MonoBehaviour
             GetComponent<Renderer>().material = idleColor;
             trailRenderer.emitting = false;
             distributeSlashDataToAgents();
+
+            RestClient.Put(api+"/slashVectors.json", new SlashVectorData(swordPath));
         }
     }
 }

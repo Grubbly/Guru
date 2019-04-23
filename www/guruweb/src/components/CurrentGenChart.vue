@@ -1,12 +1,14 @@
 <template>
     <div class="currentgen">
         <line-chart :chart-data="data" :options="options"></line-chart>
+        <scatter-chart :chart-data="slashData" :options="options3D"></scatter-chart>
     </div>
 </template>
 
 <script>
 import Firebase from 'firebase'
 import LineChart from './LineChart.js'
+import ScatterChart from './ScatterChart.js'
 
 let config = {
     apiKey: "AIzaSyAozuUHLPuRtrwI196F0aI6jIHZoDoKhRs",
@@ -26,6 +28,7 @@ export default {
     data() {
         return {
             data: {},
+            slashData: {},
             bestScores: [],
             options: {
                 responsive: true,
@@ -40,15 +43,51 @@ export default {
                 }]
                 }
             },
+            options3D: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales:{
+                yAxes:[{
+                    ticks: {
+                        beginAtZero: true,
+                        min: 0
+                    }
+                }]
+                }
+            },
         }
     },
     components: {
-      LineChart
+      LineChart,
+      ScatterChart,
     },
     firebase: {
         currentAgents: currentAgentsRef,
     },
     created() {
+
+        let slashesRef = app.database().ref("slashVectors");
+
+        slashesRef.on('value', (snapshot) => {
+            let xyVec = []
+            let slashLabels = []
+            snapshot.val().slashVectors.forEach((vector,index) => {
+                xyVec.push({
+                    x: vector.x,
+                    y: vector.y,
+                })
+                slashLabels.push(index)
+            })
+            this.slashData = {
+                label: "Sword Slash",
+                datasets: [{
+                    label: "Current Sword Slash",
+                    backgroundColor: "green",
+                    data: xyVec
+                }]
+            }
+        })
+
         db.ref("currentSession");
         db.ref().on('value',(snapshot) => {
             this.bestScores = []
