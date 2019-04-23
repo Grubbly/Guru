@@ -2,14 +2,14 @@
   <div id="app">
     <img alt="Guru logo" src="./assets/logo.png">
     <h1>Guru</h1>
-    <p class="grey lighten-3 card author">Tristan Van Cise</p>
+    <a class="orange waves-effect waves-light btn" href="https://github.com/Grubbly">Tristan Van Cise</a>
 
     <div class="container">
-      <h1>Current Generation</h1>
+      <h1>Current Session</h1>
       <div class="orange lighten-3">
         <CurrentGenChart />
       </div>
-      <Chart msg="Archived Generations"/>
+      <Chart msg="Archived Sessions"/>
     </div>
   </div>
 </template>

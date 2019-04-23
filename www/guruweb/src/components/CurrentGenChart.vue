@@ -1,7 +1,8 @@
 <template>
     <div class="currentgen">
-        <line-chart :chart-data="data" :options="options"></line-chart>
-        <scatter-chart :chart-data="slashData" :options="options3D"></scatter-chart>
+        <line-chart class="orange lighten-3 botChart" :chart-data="data" :options="options"></line-chart>
+        
+        <scatter-chart class="orange lighten-3 botChart" :chart-data="slashData" :options="options3D"></scatter-chart>
     </div>
 </template>
 
@@ -31,6 +32,10 @@ export default {
             slashData: {},
             bestScores: [],
             options: {
+                title: {
+                    display: true,
+                    text: 'Evolution History'
+                },
                 responsive: true,
                 maintainAspectRatio: false,
                 scales:{
@@ -44,6 +49,10 @@ export default {
                 }
             },
             options3D: {
+                title: {
+                    display: true,
+                    text: 'Current Sword Slash Pattern'
+                },
                 responsive: true,
                 maintainAspectRatio: false,
                 scales:{
@@ -81,7 +90,7 @@ export default {
             this.slashData = {
                 label: "Sword Slash",
                 datasets: [{
-                    label: "Current Sword Slash",
+                    label: "Current Sword Slash Pattern",
                     backgroundColor: "green",
                     data: xyVec
                 }]
@@ -117,5 +126,7 @@ export default {
 </script>
 
 <style>
-
+    .botChart {
+        margin-bottom: 15px;
+    }
 </style>
