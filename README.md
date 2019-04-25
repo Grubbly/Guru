@@ -1,5 +1,6 @@
 # Guru
 Train your VR sword apprentice to be the master of all warriors.
+
 NOTE: This can be played without VR equipment using SteamVR's 2D Debug mode in Unity!
 ___
 ## Training
