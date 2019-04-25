@@ -39,13 +39,13 @@ export default {
                 responsive: true,
                 maintainAspectRatio: false,
                 scales:{
-                yAxes:[{
-                    ticks: {
-                        suggestedMax: 100,
-                        beginAtZero: true,
-                        min: 0
-                    }
-                }]
+                    yAxes:[{
+                        ticks: {
+                            suggestedMax: 100,
+                            beginAtZero: true,
+                            min: 0
+                        }
+                    }]
                 }
             },
             options3D: {
@@ -56,6 +56,12 @@ export default {
                 responsive: true,
                 maintainAspectRatio: false,
                 scales:{
+                xAxes:[{
+                        ticks: {
+                            suggestedMin: -1.5,
+                            suggestedMax: 1,
+                        }
+                    }],
                 yAxes:[{
                     ticks: {
                         beginAtZero: true,
