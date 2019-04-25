@@ -164,7 +164,7 @@ public class PopulationManager : MonoBehaviour
         }
         Destroy(population[populationSize-1]);
         population[population.Count-1] = Breed(bestAgent,bestAgent,populationSize-1,false);
-        //spawnBestAgent();
+        spawnBestAgent();
 
         foreach(GameObject bot in sortedPopulation) {
             Destroy(bot);
