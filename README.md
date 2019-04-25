@@ -7,7 +7,7 @@ ___
 
 ![Bot](bot.gif)
 ![training](graphTraining.gif)
-![slice](slice2.gif)
+![slice](slice3.gif)
 ![Pill](guru2.PNG)
 
 ___
